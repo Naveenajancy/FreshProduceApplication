@@ -1,0 +1,46 @@
+version: "3"
+services:
+  fresh-produce-app:
+    build:
+      context: ../fresh-produce-app
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - SERVER_PORT=8080
+      - POSTGRESDB_IP=
+      - AWS_REGION=
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - DB_USER=
+      - DB_PASSWD=
+      - LOG_LEVEL=info
+
+  fresh-produce-inventory-system:
+    build:
+      context: ../fresh-produce-inventory-system
+      dockerfile: ./Dockerfile
+    ports:
+      - 8081:8081
+    environment:
+      - SERVER_PORT=8081
+      - FRESH_PRODUCE_APP_SERVICE_HOST=fresh-produce-app
+      - AWS_REGION=
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - LOG_LEVEL=info
+    depends_on:
+      - fresh-produce-app
+
+  fresh-produce-inventory-replenisher:
+    build:
+      context: ../fresh-produce-inventory-replenisher
+      dockerfile: ./Dockerfile
+    environment:
+      - POSTGRESDB_IP=
+      - AWS_REGION=
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - DB_USER=
+      - DB_PASSWD=
+      - LOG_LEVEL=info
